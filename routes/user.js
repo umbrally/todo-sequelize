@@ -9,6 +9,8 @@ const User = db.User
 router.get('/login', (req, res) => {
   res.render('login')
 })
+
+
 // 登入檢查
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', {
@@ -42,4 +44,5 @@ router.post('/register', (req, res) => {
 router.get('/logout', (req, res) => {
   res.send('logout')
 })
+
 module.exports = router

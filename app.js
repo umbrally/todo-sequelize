@@ -7,10 +7,9 @@ const passport = require('passport')
 const session = require('express-session')
 
 const db = require('./models')
-const Todo = db.Todo
-const User = db.User
 
 const port = 3000
+
 
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
@@ -18,15 +17,15 @@ app.set('view engine', 'handlebars')
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
-
 app.use(session({
   secret: 'maggie',
   resave: 'false',
   saveUninitialized: 'false',
 }))
 
-
 app.use(passport.initialize())
+
+
 app.use(passport.session())
 
 
@@ -39,15 +38,14 @@ app.use((req, res, next) => {
 })
 
 
-// setting routes
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
 
 // 路由設定
+app.use('/', require('./routes/home.js'))
 app.use('/users', require('./routes/user.js'))
+app.use('/todos', require('./routes/todo.js'))
 
 
 app.listen(port, (req, res) => {
+  db.sequelize.sync()
   console.log(`App is running on port ${port}!`)
 })
