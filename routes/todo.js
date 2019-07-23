@@ -1,5 +1,7 @@
 const express = require('express')
 const router = express.Router()
+const { validationResult } = require('express-validator')
+const { todoValidator } = require('../models/validator.js')
 
 const db = require('../models')
 const User = db.User
@@ -22,16 +24,25 @@ router.get('/new', authenticated, (req, res) => {
 // 新增一筆todo動作
 
 router.post('/', authenticated, (req, res) => {
-  const newTodo = new Todo({
-    name: req.body.name,
-    done: false,
-    UserId: req.user.id
-  })
-  newTodo
-    .save()
-    .then(todo => res.redirect('/'))
-    .catch(err => res.status(422).json(err))
-
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    let errorsMessages = []
+    errors.array().forEach(error => {
+      errorsMessages.push({ message: error.msg })
+    })
+    res.render('new', { errors: errorsMessages })
+  }
+  else {
+    const newTodo = new Todo({
+      name: req.body.name,
+      done: false,
+      UserId: req.user.id
+    })
+    newTodo
+      .save()
+      .then(todo => res.redirect('/'))
+      .catch(err => res.status(422).json(err))
+  }
 })
 
 
@@ -50,8 +61,6 @@ router.get('/:id', authenticated, (req, res) => {
     .then(todo => res.render('detail', { todo }))
     .catch(err => res.status(422).json(err))
 })
-
-
 
 
 // 修改一筆todo頁面
@@ -73,20 +82,31 @@ router.get('/:id/edit', authenticated, (req, res) => {
 
 // 修改一筆todo動作
 router.put('/:id', authenticated, (req, res) => {
-  Todo.findOne({
-    where: {
-      UserId: req.user.id,
-      Id: req.params.id
-    }
-  })
-    .then(todo => {
-      todo.name = req.body.name
-      console.log('what is req.body.done', req.body.done)
-      todo.done = req.body.done === 'on'
-      return todo.save()
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    let errorsMessages = []
+    errors.array().forEach(error => {
+      errorsMessages.push({ message: error.msg })
     })
-    .then((todo) => { return res.redirect(`/todos/${req.params.id}`) })
-    .catch(err => res.status(422).json(err))
+    res.render('new', { errors: errorsMessages })
+  }
+  else {
+    Todo.findOne({
+      where: {
+        UserId: req.user.id,
+        Id: req.params.id
+      }
+    })
+      .then(todo => {
+        todo.name = req.body.name
+        console.log('what is req.body.done', req.body.done)
+        todo.done = req.body.done === 'on'
+        return todo.save()
+      })
+      .then((todo) => { return res.redirect(`/todos/${req.params.id}`) })
+      .catch(err => res.status(422).json(err))
+  }
+
 })
 
 
@@ -108,9 +128,6 @@ router.delete('/:id', authenticated, (req, res) => {
     })
     .catch(err => res.status(422).json(err))
 })
-
-
-
 
 
 module.exports = router
