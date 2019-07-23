@@ -16,6 +16,9 @@ router.post('/login', (req, res, next) => {
   passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/users/login',
+    failureFlash: true,
+    successFlash: '您已成功登入!',
+    badRequestMessage: '請輸入email 及 密碼'
   })(req, res, next)
 
 })
@@ -42,7 +45,10 @@ router.post('/register', (req, res) => {
 })
 // 登出
 router.get('/logout', (req, res) => {
-  res.send('logout')
+  req.logout()
+
+  req.flash('success', '您已經成功登出')
+  res.redirect('/users/login')
 })
 
 module.exports = router

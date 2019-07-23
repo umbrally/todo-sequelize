@@ -9,11 +9,11 @@ module.exports = passport => {
       User.findOne({ where: { email: email } }).then(user => {
         if (!user) {
           console.log('That email is not registered.')
-          return done(null, false, { message: 'That email is not registered' })
+          return done(null, false, { message: '此 email 尚未註冊' })
         }
         if (password != user.password) {
           console.log('user password not correct.')
-          return done(null, false, { message: 'Email or Password incorrect' })
+          return done(null, false, { message: 'Email 或 Password 輸入錯誤' })
         }
         else {
           return done(null, user)
