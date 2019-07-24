@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const { validationResult } = require('express-validator')
-const { todoValidator } = require('../models/validator.js')
+const { todoValidator } = require('../lib/validator.js')
 
 const db = require('../models')
 const User = db.User

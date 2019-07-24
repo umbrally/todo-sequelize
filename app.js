@@ -6,6 +6,9 @@ const methodOverride = require('method-override')
 const passport = require('passport')
 const session = require('express-session')
 const flash = require('connect-flash')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 
 const db = require('./models')
 
@@ -47,6 +50,7 @@ app.use((req, res, next) => {
 app.use('/', require('./routes/home.js'))
 app.use('/users', require('./routes/user.js'))
 app.use('/todos', require('./routes/todo.js'))
+app.use('/auth', require('./routes/auths.js'))
 
 
 app.listen(port, (req, res) => {

@@ -3,7 +3,7 @@ const router = express.Router()
 const passport = require('passport')
 const bcrypt = require('bcryptjs')
 const { validationResult } = require('express-validator')
-const { registerValidator } = require('../models/validator.js')
+const { registerValidator } = require('../lib/validator.js')
 
 const db = require('../models')
 const User = db.User
