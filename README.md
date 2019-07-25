@@ -1,6 +1,6 @@
 # Restaurant Pocket List
 
-Expense-tracker
+todo-sequelize
 
 
 ## Getting Started

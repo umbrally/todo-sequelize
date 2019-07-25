@@ -32,20 +32,21 @@ router.get('/register', (req, res) => {
 // 註冊檢查
 router.post('/register', registerValidator, (req, res) => {
   const errors = validationResult(req)
+  const { name, email, password, password2 } = req.body
   if (!errors.isEmpty()) {
     let errorsMessages = []
     errors.array().forEach(error => {
       errorsMessages.push({ message: error.msg })
     })
-    return res.render('register', { errors: errorsMessages })
+    return res.render('register', { name, email, password, password2, errors: errorsMessages })
   }
 
   else {
-    const { name, email, password, password2 } = req.body
     User.findOne({ where: { email: email } }).then(user => {
       if (user) {
         console.log('this email already exists')
-        res.render('register', { nama, email, password, password2 })
+        errorsMessages.push({ message: '這個 Email 已經註冊過了' })
+        res.render('register', { name, email, password, password2, errors: errorsMessages })
       }
       else {
         const newUser = new User({ name, email, password })
